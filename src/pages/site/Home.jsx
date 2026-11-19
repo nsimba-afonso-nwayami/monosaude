@@ -5,6 +5,7 @@ import About from "../../components/home/About";
 import HowItWorks from "../../components/home/HowItWorks";
 import Modules from "../../components/home/Modules";
 import Plans from "../../components/home/Plans";
+import CallToAction from "../../components/home/CallToAction";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
       <HowItWorks />
       <Modules />
       <Plans />
+      <CallToAction />
 
       {/* Botão WhatsApp fixo */}
       <WhatsAppButton phone="244972614886" size={64} />
