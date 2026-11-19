@@ -114,7 +114,6 @@ export default function Login() {
             fullWidth
           >
             Entrar
-            <i className="fas fa-arrow-right ml-2"></i>
           </Button>
 
         </form>
