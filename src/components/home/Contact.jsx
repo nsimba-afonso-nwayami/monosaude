@@ -146,7 +146,6 @@ export default function Contact() {
                 fullWidth
               >
                 Enviar mensagem
-                <i className="fas fa-paper-plane"></i>
               </Button>
 
             </form>
