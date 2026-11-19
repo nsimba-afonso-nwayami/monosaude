@@ -1,7 +1,18 @@
 
 import Button from "../ui/Button";
+import Input from "../ui/Input";
+import Select from "../ui/Select";
+import Textarea from "../ui/Textarea";
 
 export default function Contact() {
+  const subjects = [
+    { value: "Informações gerais", label: "Informações gerais" },
+    { value: "Planos e preços", label: "Planos e preços" },
+    { value: "Parcerias", label: "Parcerias" },
+    { value: "Suporte", label: "Suporte" },
+    { value: "Outros", label: "Outros assuntos" },
+  ];
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -83,121 +94,49 @@ export default function Contact() {
 
               {/* Nome e Email */}
               <div className="grid sm:grid-cols-2 gap-5">
+                <Input
+                  id="name"
+                  name="name"
+                  label="Nome completo"
+                  placeholder="O seu nome"
+                />
 
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-semibold text-gray-700 mb-2"
-                  >
-                    Nome completo
-                  </label>
-
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="O seu nome"
-                    required
-                    className="w-full px-4 py-3 rounded-md border border-gray-200 bg-gray-50 text-gray-700 text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/10 transition-all duration-300"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-semibold text-gray-700 mb-2"
-                  >
-                    Email
-                  </label>
-
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="exemplo@email.com"
-                    required
-                    className="w-full px-4 py-3 rounded-md border border-gray-200 bg-gray-50 text-gray-700 text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/10 transition-all duration-300"
-                  />
-                </div>
-
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  label="Email"
+                  placeholder="exemplo@email.com"
+                />
               </div>
 
               {/* Telefone e Assunto */}
               <div className="grid sm:grid-cols-2 gap-5">
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  label="Telefone"
+                  placeholder="+244 900 000 000"
+                />
 
-                <div>
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-semibold text-gray-700 mb-2"
-                  >
-                    Telefone
-                  </label>
-
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    placeholder="+244 900 000 000"
-                    className="w-full px-4 py-3 rounded-md border border-gray-200 bg-gray-50 text-gray-700 text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/10 transition-all duration-300"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="subject"
-                    className="block text-sm font-semibold text-gray-700 mb-2"
-                  >
-                    Assunto
-                  </label>
-
-                  <select
-                    id="subject"
-                    name="subject"
-                    required
-                    defaultValue=""
-                    className="w-full px-4 py-3 rounded-md border border-gray-200 bg-gray-50 text-gray-700 text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/10 transition-all duration-300"
-                  >
-                    <option value="" disabled>
-                      Selecione um assunto
-                    </option>
-                    <option value="Informações gerais">
-                      Informações gerais
-                    </option>
-                    <option value="Planos e preços">
-                      Planos e preços
-                    </option>
-                    <option value="Parcerias">
-                      Parcerias
-                    </option>
-                    <option value="Suporte">
-                      Suporte
-                    </option>
-                    <option value="Outros">
-                      Outros assuntos
-                    </option>
-                  </select>
-                </div>
-
+                <Select
+                  id="subject"
+                  name="subject"
+                  label="Assunto"
+                  placeholder="Selecione um assunto"
+                  options={subjects}
+                />
               </div>
 
               {/* Mensagem */}
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-semibold text-gray-700 mb-2"
-                >
-                  Mensagem
-                </label>
-
-                <textarea
-                  id="message"
-                  name="message"
-                  rows="5"
-                  placeholder="Escreva a sua mensagem..."
-                  required
-                  className="w-full px-4 py-3 rounded-md border border-gray-200 bg-gray-50 text-gray-700 text-sm outline-none resize-none focus:border-green-600 focus:ring-2 focus:ring-green-600/10 transition-all duration-300"
-                ></textarea>
-              </div>
+              <Textarea
+                id="message"
+                name="message"
+                label="Mensagem"
+                placeholder="Escreva a sua mensagem..."
+                rows={5}
+              />
 
               {/* Botão */}
               <Button
