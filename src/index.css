@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@import "tailwindcss";
+
+*::selection {
+  background-color: #00510c;
+  color: #ffffff;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+
+.hero-swiper .swiper-pagination {
+  bottom: 30px !important;
+}
+
+.hero-swiper .swiper-pagination-bullet {
+  background: #ffffff;
+  opacity: 0.5;
+  width: 9px;
+  height: 9px;
+  transition: all 0.3s ease;
+}
+
+.hero-swiper .swiper-pagination-bullet-active {
+  background: #048838;
+  opacity: 1;
+  width: 28px;
+  border-radius: 10px;
+}
+
+.hero-title,
+.hero-description,
+.hero-buttons,
+.hero-stats {
+  opacity: 0;
+  transform: translateY(25px);
+}
+
+.swiper-slide-active .hero-title {
+  animation: heroFadeUp 0.8s ease forwards;
+  animation-delay: 0.2s;
+}
+
+.swiper-slide-active .hero-description {
+  animation: heroFadeUp 0.8s ease forwards;
+  animation-delay: 0.4s;
+}
+
+.swiper-slide-active .hero-buttons {
+  animation: heroFadeUp 0.8s ease forwards;
+  animation-delay: 0.6s;
+}
+
+.swiper-slide-active .hero-stats {
+  animation: heroFadeUp 0.8s ease forwards;
+  animation-delay: 0.8s;
+}
+
+@keyframes heroFadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-title,
+  .hero-description,
+  .hero-buttons,
+  .hero-stats {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}
+
