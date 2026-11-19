@@ -3,6 +3,7 @@ import Hero from "../../components/home/Hero";
 import Benefits from "../../components/home/Benefits";
 import About from "../../components/home/About";
 import HowItWorks from "../../components/home/HowItWorks";
+import Modules from "../../components/home/Modules";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <Benefits />
       <About />
       <HowItWorks />
+      <Modules />
 
       {/* Botão WhatsApp fixo */}
       <WhatsAppButton phone="244972614886" size={64} />
