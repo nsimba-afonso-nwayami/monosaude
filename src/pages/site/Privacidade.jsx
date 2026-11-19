@@ -1,4 +1,3 @@
-
 import WhatsAppButton from "../../components/whatsapp/WhatsAppButton";
 
 export default function Privacidade() {
