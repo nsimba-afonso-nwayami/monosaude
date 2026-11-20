@@ -80,7 +80,7 @@ export default function Login() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-[42px] text-gray-400 hover:text-green-700 transition-colors"
+              className="absolute right-4 top-[42px] text-gray-400 hover:text-green-700 transition-colors cursor-pointer"
               aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
             >
               <i className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
