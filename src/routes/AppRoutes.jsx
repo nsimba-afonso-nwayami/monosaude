@@ -16,6 +16,9 @@ import NotFound from "../pages/site/NotFound";
 // Páginas de autenticação
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
+import ForgotPassword from "../pages/auth/ForgotPassword";
+import ResetPassword from "../pages/auth/ResetPassword";
+import VerifyEmail from "../pages/auth/VerifyEmail";
 
 
 export default function AppRoutes() {
@@ -36,6 +39,18 @@ export default function AppRoutes() {
 
       <Route element={<AuthLayout image="/img/register.png" />}>
         <Route path="/register" element={<Register />} />
+      </Route>
+
+      <Route element={<AuthLayout image="/img/forgot.png" />}>
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+      </Route>
+
+      <Route element={<AuthLayout image="/img/reset.png" />}>
+        <Route path="/reset-password" element={<ResetPassword />} />
+      </Route>
+
+      <Route element={<AuthLayout image="/img/email.png" />}>
+        <Route path="/verify-email" element={<VerifyEmail />} />
       </Route>
       
     </Routes>
