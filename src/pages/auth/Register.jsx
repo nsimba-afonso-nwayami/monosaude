@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import Button from "../../components/ui/Button";
@@ -5,6 +6,9 @@ import Input from "../../components/ui/Input";
 import Select from "../../components/ui/Select";
 
 export default function Register() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -98,25 +102,49 @@ export default function Register() {
             required
           />
 
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            label="Senha"
-            placeholder="Introduza uma senha"
-            autoComplete="new-password"
-            required
-          />
+          {/* Senha */}
+          <div className="relative">
+            <Input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              label="Senha"
+              placeholder="Introduza uma senha"
+              autoComplete="new-password"
+              required
+            />
 
-          <Input
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            label="Confirmar senha"
-            placeholder="Confirme a sua senha"
-            autoComplete="new-password"
-            required
-          />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-[42px] text-gray-400 hover:text-green-700 transition-colors cursor-pointer"
+              aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+            >
+              <i className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+            </button>
+          </div>
+
+          {/* Confirmar senha */}
+          <div className="relative">
+            <Input
+              id="confirmPassword"
+              name="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
+              label="Confirmar senha"
+              placeholder="Confirme a sua senha"
+              autoComplete="new-password"
+              required
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-4 top-[42px] text-gray-400 hover:text-green-700 transition-colors cursor-pointer"
+              aria-label={showConfirmPassword ? "Ocultar senha" : "Mostrar senha"}
+            >
+              <i className={`fas ${showConfirmPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+            </button>
+          </div>
 
           <div className="pt-2">
             <Button
