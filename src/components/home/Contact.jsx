@@ -1,7 +1,13 @@
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import toast from "react-hot-toast";
+
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import Select from "../ui/Select";
 import Textarea from "../ui/Textarea";
+
+import contactSchema from "../../validations/contactSchema";
 
 export default function Contact() {
   const subjects = [
@@ -12,20 +18,38 @@ export default function Contact() {
     { value: "Outros", label: "Outros assuntos" },
   ];
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(contactSchema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+    },
+  });
 
-    const formData = new FormData(event.target);
+  const onSubmit = async (data) => {
+    try {
+      // Simula o tempo de processamento do envio.
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
-      subject: formData.get("subject"),
-      message: formData.get("message"),
-    };
+      console.log("Dados do contacto:", data);
 
-    console.log("Dados do contacto:", data);
+      toast.success("Mensagem enviada com sucesso!");
+    } catch (error) {
+      toast.error("Não foi possível enviar a mensagem.");
+    }
+  };
+
+  const onInvalid = () => {
+    toast.error("Verifique os campos e corrija os erros indicados.");
   };
 
   return (
@@ -89,23 +113,31 @@ export default function Contact() {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <form
+              onSubmit={handleSubmit(onSubmit, onInvalid)}
+              noValidate
+              className="flex flex-col gap-5"
+            >
 
               {/* Nome e Email */}
               <div className="grid sm:grid-cols-2 gap-5">
                 <Input
                   id="name"
-                  name="name"
                   label="Nome completo"
                   placeholder="O seu nome"
+                  autoComplete="name"
+                  error={errors.name}
+                  {...register("name")}
                 />
 
                 <Input
                   id="email"
-                  name="email"
                   type="email"
                   label="Email"
                   placeholder="exemplo@email.com"
+                  autoComplete="email"
+                  error={errors.email}
+                  {...register("email")}
                 />
               </div>
 
@@ -113,29 +145,40 @@ export default function Contact() {
               <div className="grid sm:grid-cols-2 gap-5">
                 <Input
                   id="phone"
-                  name="phone"
                   type="tel"
                   label="Telefone"
                   placeholder="+244 900 000 000"
+                  autoComplete="tel"
+                  error={errors.phone}
+                  {...register("phone")}
                 />
 
                 <Select
                   id="subject"
-                  name="subject"
                   label="Assunto"
                   placeholder="Selecione um assunto"
                   options={subjects}
+                  error={errors.subject}
+                  {...register("subject")}
                 />
               </div>
 
               {/* Mensagem */}
-              <Textarea
-                id="message"
-                name="message"
-                label="Mensagem"
-                placeholder="Escreva a sua mensagem..."
-                rows={5}
-              />
+              <div>
+                <Textarea
+                  id="message"
+                  label="Mensagem"
+                  placeholder="Escreva a sua mensagem..."
+                  rows={5}
+                  {...register("message")}
+                />
+
+                {errors.message && (
+                  <p className="text-red-500 text-xs mt-1.5">
+                    {errors.message.message}
+                  </p>
+                )}
+              </div>
 
               {/* Botão */}
               <Button
@@ -143,6 +186,8 @@ export default function Contact() {
                 variant="primary"
                 size="lg"
                 fullWidth
+                disabled={isSubmitting}
+                isLoading={isSubmitting}
               >
                 Enviar mensagem
               </Button>
