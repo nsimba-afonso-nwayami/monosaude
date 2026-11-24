@@ -1,19 +1,37 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import toast from "react-hot-toast";
 
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 import Select from "../../components/ui/Select";
 
+import registerSchema from "../../validations/auth/registerSchema";
+
 export default function Register() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    // A lógica de cadastro será integrada posteriormente.
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(registerSchema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      userType: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
   const userTypes = [
     // { value: "patient", label: "Paciente" },
@@ -22,6 +40,22 @@ export default function Register() {
     { value: "pharmacy", label: "Farmácia" },
     { value: "laboratory", label: "Laboratório" },
   ];
+
+  const onSubmit = (data) => {
+    console.log("Dados do cadastro:", data);
+
+    toast.success("Cadastro realizado com sucesso!");
+
+    navigate("/verify-email", {
+      state: {
+        email: data.email,
+      },
+    });
+  };
+
+  const onInvalid = () => {
+    toast.error("Verifique os campos e corrija os erros indicados.");
+  };
 
   return (
     <>
@@ -61,57 +95,61 @@ export default function Register() {
         </div>
 
         {/* Formulário */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form
+          onSubmit={handleSubmit(onSubmit, onInvalid)}
+          noValidate
+          className="space-y-5"
+        >
 
           <Input
             id="name"
-            name="name"
             type="text"
             label="Nome completo"
             placeholder="Introduza o seu nome completo"
             autoComplete="name"
-            required
+            error={errors.name}
+            {...register("name")}
           />
 
           <Input
             id="email"
-            name="email"
             type="email"
             label="Email"
             placeholder="exemplo@email.com"
             autoComplete="email"
-            required
+            error={errors.email}
+            {...register("email")}
           />
 
           <Input
             id="phone"
-            name="phone"
             type="tel"
             label="Telefone"
             placeholder="+244 9XX XXX XXX"
             autoComplete="tel"
-            required
+            error={errors.phone}
+            {...register("phone")}
           />
 
           <Select
             id="userType"
-            name="userType"
             label="Tipo de usuário"
             placeholder="Selecione o seu perfil"
             options={userTypes}
-            required
+            error={errors.userType}
+            {...register("userType")}
           />
 
           {/* Senha */}
           <div className="relative">
             <Input
               id="password"
-              name="password"
               type={showPassword ? "text" : "password"}
               label="Senha"
               placeholder="Introduza uma senha"
               autoComplete="new-password"
-              required
+              error={errors.password}
+              {...register("password")}
             />
 
             <button
@@ -120,7 +158,11 @@ export default function Register() {
               className="absolute right-4 top-[42px] text-gray-400 hover:text-green-700 transition-colors cursor-pointer"
               aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
             >
-              <i className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+              <i
+                className={`fas ${
+                  showPassword ? "fa-eye-slash" : "fa-eye"
+                }`}
+              ></i>
             </button>
           </div>
 
@@ -128,30 +170,41 @@ export default function Register() {
           <div className="relative">
             <Input
               id="confirmPassword"
-              name="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
               label="Confirmar senha"
               placeholder="Confirme a sua senha"
               autoComplete="new-password"
-              required
+              error={errors.confirmPassword}
+              {...register("confirmPassword")}
             />
 
             <button
               type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              onClick={() =>
+                setShowConfirmPassword(!showConfirmPassword)
+              }
               className="absolute right-4 top-[42px] text-gray-400 hover:text-green-700 transition-colors cursor-pointer"
-              aria-label={showConfirmPassword ? "Ocultar senha" : "Mostrar senha"}
+              aria-label={
+                showConfirmPassword ? "Ocultar senha" : "Mostrar senha"
+              }
             >
-              <i className={`fas ${showConfirmPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+              <i
+                className={`fas ${
+                  showConfirmPassword ? "fa-eye-slash" : "fa-eye"
+                }`}
+              ></i>
             </button>
           </div>
 
+          {/* Botão */}
           <div className="pt-2">
             <Button
               type="submit"
               variant="primary"
               size="lg"
               fullWidth
+              disabled={isSubmitting}
+              isLoading={isSubmitting}
             >
               Criar conta
             </Button>

@@ -1,33 +1,60 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import toast from "react-hot-toast";
 
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 
+import resetPasswordSchema from "../../validations/auth/resetPasswordSchema";
+
 export default function ResetPassword() {
   const { token } = useParams();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const email = location.state?.email;
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(resetPasswordSchema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
-    const formData = new FormData(event.target);
-
-    const data = {
+  const onSubmit = (data) => {
+    const resetData = {
       token,
-      password: formData.get("password"),
-      confirmPassword: formData.get("confirmPassword"),
+      email,
+      password: data.password,
     };
 
-    if (data.password !== data.confirmPassword) {
-      alert("As senhas não coincidem.");
-      return;
-    }
+    console.log("Dados de redefinição:", resetData);
 
-    // A lógica de redefinição será integrada posteriormente.
-    console.log(data);
+    // Simulação da redefinição da senha.
+    toast.success("Senha redefinida com sucesso!");
+
+    navigate("/login", {
+      state: {
+        email: email || "",
+      },
+    });
+  };
+
+  const onInvalid = () => {
+    toast.error("Verifique os campos e corrija os erros indicados.");
   };
 
   return (
@@ -68,27 +95,37 @@ export default function ResetPassword() {
         </div>
 
         {/* Formulário */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form
+          onSubmit={handleSubmit(onSubmit, onInvalid)}
+          noValidate
+          className="space-y-5"
+        >
 
           {/* Nova senha */}
           <div className="relative">
             <Input
               id="password"
-              name="password"
               type={showPassword ? "text" : "password"}
               label="Nova senha"
               placeholder="Introduza a nova senha"
               autoComplete="new-password"
-              required
+              error={errors.password}
+              {...register("password")}
             />
 
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-4 top-[42px] text-gray-400 hover:text-green-700 transition-colors cursor-pointer"
-              aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+              aria-label={
+                showPassword ? "Ocultar senha" : "Mostrar senha"
+              }
             >
-              <i className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+              <i
+                className={`fas ${
+                  showPassword ? "fa-eye-slash" : "fa-eye"
+                }`}
+              ></i>
             </button>
           </div>
 
@@ -96,21 +133,31 @@ export default function ResetPassword() {
           <div className="relative">
             <Input
               id="confirmPassword"
-              name="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
               label="Confirmar nova senha"
               placeholder="Confirme a nova senha"
               autoComplete="new-password"
-              required
+              error={errors.confirmPassword}
+              {...register("confirmPassword")}
             />
 
             <button
               type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              onClick={() =>
+                setShowConfirmPassword(!showConfirmPassword)
+              }
               className="absolute right-4 top-[42px] text-gray-400 hover:text-green-700 transition-colors cursor-pointer"
-              aria-label={showConfirmPassword ? "Ocultar senha" : "Mostrar senha"}
+              aria-label={
+                showConfirmPassword
+                  ? "Ocultar senha"
+                  : "Mostrar senha"
+              }
             >
-              <i className={`fas ${showConfirmPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+              <i
+                className={`fas ${
+                  showConfirmPassword ? "fa-eye-slash" : "fa-eye"
+                }`}
+              ></i>
             </button>
           </div>
 
@@ -121,6 +168,8 @@ export default function ResetPassword() {
               variant="primary"
               size="lg"
               fullWidth
+              disabled={isSubmitting}
+              isLoading={isSubmitting}
             >
               Redefinir senha
             </Button>

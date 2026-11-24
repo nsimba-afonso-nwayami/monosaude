@@ -1,20 +1,44 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import toast from "react-hot-toast";
 
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 
+import forgotPasswordSchema from "../../validations/auth/forgotPasswordSchema";
+
 export default function ForgotPassword() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const navigate = useNavigate();
 
-    const formData = new FormData(event.target);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(forgotPasswordSchema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    defaultValues: {
+      email: "",
+    },
+  });
 
-    const data = {
-      email: formData.get("email"),
-    };
+  const onSubmit = (data) => {
+    console.log("Email para recuperação:", data);
 
-    // A lógica de recuperação será integrada posteriormente.
-    console.log(data);
+    // Simulação do envio das instruções de recuperação.
+    toast.success("Instruções de recuperação enviadas com sucesso!");
+
+    navigate("/reset-password/", {
+      state: {
+        email: data.email,
+      },
+    });
+  };
+
+  const onInvalid = () => {
+    toast.error("Introduza um endereço de email válido.");
   };
 
   return (
@@ -56,16 +80,19 @@ export default function ForgotPassword() {
         </div>
 
         {/* Formulário */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-
+        <form
+          onSubmit={handleSubmit(onSubmit, onInvalid)}
+          noValidate
+          className="space-y-5"
+        >
           <Input
             id="email"
-            name="email"
             type="email"
             label="Email"
             placeholder="exemplo@email.com"
             autoComplete="email"
-            required
+            error={errors.email}
+            {...register("email")}
           />
 
           <div className="pt-2">
@@ -74,11 +101,12 @@ export default function ForgotPassword() {
               variant="primary"
               size="lg"
               fullWidth
+              disabled={isSubmitting}
+              isLoading={isSubmitting}
             >
               Recuperar senha
             </Button>
           </div>
-
         </form>
 
         {/* Voltar ao login */}

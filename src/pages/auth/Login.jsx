@@ -1,22 +1,47 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import toast from "react-hot-toast";
+
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
+
+import loginSchema from "../../validations/auth/loginSchema";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    const formData = new FormData(event.target);
+  const registeredEmail = location.state?.email;
 
-    const data = {
-      email: formData.get("email"),
-      password: formData.get("password"),
-    };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(loginSchema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    defaultValues: {
+      email: registeredEmail || "",
+      password: "",
+    },
+  });
 
-    console.log(data);
+  const onSubmit = (data) => {
+    console.log("Dados de login:", data);
+
+    // Simulação da autenticação.
+    toast.success("Login realizado com sucesso!");
+
+    navigate("/");
+  };
+
+  const onInvalid = () => {
+    toast.error("Verifique os campos e corrija os erros indicados.");
   };
 
   return (
@@ -56,34 +81,45 @@ export default function Login() {
         </div>
 
         {/* Formulário */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-
+        <form
+          onSubmit={handleSubmit(onSubmit, onInvalid)}
+          noValidate
+          className="space-y-5"
+        >
           <Input
             label="Email"
             id="email"
-            name="email"
             type="email"
             placeholder="exemplo@email.com"
             autoComplete="email"
+            error={errors.email}
+            {...register("email")}
           />
 
           <div className="relative">
             <Input
               label="Senha"
               id="password"
-              name="password"
               type={showPassword ? "text" : "password"}
               placeholder="Introduza a sua senha"
               autoComplete="current-password"
+              error={errors.password}
+              {...register("password")}
             />
 
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-4 top-[42px] text-gray-400 hover:text-green-700 transition-colors cursor-pointer"
-              aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+              aria-label={
+                showPassword ? "Ocultar senha" : "Mostrar senha"
+              }
             >
-              <i className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+              <i
+                className={`fas ${
+                  showPassword ? "fa-eye-slash" : "fa-eye"
+                }`}
+              ></i>
             </button>
           </div>
 
@@ -92,8 +128,8 @@ export default function Login() {
             <label className="flex items-center gap-2 text-gray-600 cursor-pointer">
               <input
                 type="checkbox"
-                name="remember"
                 className="w-4 h-4 accent-green-600 cursor-pointer"
+                {...register("remember")}
               />
               Lembrar-me
             </label>
@@ -112,10 +148,11 @@ export default function Login() {
             variant="primary"
             size="lg"
             fullWidth
+            disabled={isSubmitting}
+            isLoading={isSubmitting}
           >
             Entrar
           </Button>
-
         </form>
 
         {/* Cadastro */}

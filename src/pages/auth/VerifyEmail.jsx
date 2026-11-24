@@ -1,24 +1,52 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import toast from "react-hot-toast";
 
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 
+import verifyEmailSchema from "../../validations/auth/verifyEmailSchema";
+
 export default function VerifyEmail() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    const formData = new FormData(event.target);
+  const email = location.state?.email;
 
-    const data = {
-      code: formData.get("code"),
-    };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(verifyEmailSchema),
+    mode: "onBlur",
+    reValidateMode: "onChange",
+    defaultValues: {
+      code: "",
+    },
+  });
 
-    // A lógica de verificação será integrada posteriormente.
-    console.log(data);
+  const onSubmit = (data) => {
+    console.log("Código de verificação:", data);
+
+    // Simulação da verificação do código.
+    toast.success("Email verificado com sucesso!");
+
+    navigate("/login", {
+      state: {
+        email: email,
+      },
+    });
+  };
+
+  const onInvalid = () => {
+    toast.error("Introduza um código de verificação válido.");
   };
 
   const handleResendCode = () => {
-    // A lógica de reenvio do código será integrada posteriormente.
+    // Simulação do reenvio do código.
+    toast.success("Um novo código foi enviado para o seu email!");
   };
 
   return (
@@ -57,25 +85,30 @@ export default function VerifyEmail() {
           </h2>
 
           <p className="text-gray-500 text-sm sm:text-base leading-relaxed">
-            Enviámos um código de verificação para o seu endereço de email.
-            Introduza o código abaixo para confirmar a sua conta.
+            Enviámos um código de verificação para{" "}
+            <span className="font-semibold text-green-800">
+              {email || "o seu endereço de email"}
+            </span>
+            . Introduza o código abaixo para confirmar a sua conta.
           </p>
         </div>
 
         {/* Formulário */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-
+        <form
+          onSubmit={handleSubmit(onSubmit, onInvalid)}
+          noValidate
+          className="space-y-5"
+        >
           <Input
             id="code"
-            name="code"
             type="text"
             label="Código de verificação"
             placeholder="Introduza os 6 dígitos"
             inputMode="numeric"
             maxLength={6}
-            pattern="[0-9]{6}"
             autoComplete="one-time-code"
-            required
+            error={errors.code}
+            {...register("code")}
           />
 
           <div className="pt-2">
@@ -84,12 +117,13 @@ export default function VerifyEmail() {
               variant="primary"
               size="lg"
               fullWidth
+              disabled={isSubmitting}
+              isLoading={isSubmitting}
             >
               Verificar email
               <i className="fas fa-check-circle ml-2"></i>
             </Button>
           </div>
-
         </form>
 
         {/* Reenviar código */}
